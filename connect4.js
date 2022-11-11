@@ -6,13 +6,14 @@
  */
 
 class Game {
-  constructor(firstColor, secondColor) {
-    this.width = 7;
-    this.height = 6;
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
     this.board = [];
     this.currPlayer = 1;
-    this.firstColor = firstColor;
-    this.secondColor = secondColor;
+    this.makeBoard();
+    this.makeHtmlBoard();
+  
     // TODO: figure out where to put the above two variables and figure out how to initialize
   }
 
@@ -20,6 +21,8 @@ class Game {
     for (let y = 0; y < this.height; y++) {
       this.board.push(Array.from({ length: this.width }));
     }
+    console.log(this.board)
+
   }
 
   makeHtmlBoard() {
@@ -28,7 +31,7 @@ class Game {
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', handleClick);
+    top.addEventListener('click', this.handleClick.bind(this));
   
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement('td');
@@ -64,7 +67,7 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${currPlayer}`);
+    piece.classList.add(`p${this.currPlayer}`);
     piece.style.top = -50 * (y + 2);
   
     const spot = document.getElementById(`${y}-${x}`);
@@ -80,23 +83,23 @@ class Game {
     const x = +evt.target.id;
   
     // get next spot in column (if none, ignore click)
-    const y = findSpotForCol(x);
+    const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
   
     // place piece in board and add to HTML table
     this.board[y][x] = this.currPlayer;
-    placeInTable(y, x);
+    this.placeInTable(y, x);
     
     // check for win
-    if (checkForWin()) {
-      return endGame(`Player ${this.currPlayer} won!`);
+    if (this.checkForWin()) {
+      return this.endGame(`Player ${this.currPlayer} won!`);
     }
     
     // check for tie
     if (this.board.every(row => row.every(cell => cell))) {
-      return endGame('Tie!');
+      return this.endGame('Tie!');
     }
       
     // switch players
@@ -135,9 +138,13 @@ class Game {
       }
     }
   }
+ 
+  
 }
 
-const g1 = new Game();
+const g1 = new Game(7, 6);
+console.log(g1);
+
 
 
 // const WIDTH = 7;
