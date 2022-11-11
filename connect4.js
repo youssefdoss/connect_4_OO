@@ -5,8 +5,9 @@
  * board fills (tie)
  */
 class Player {
-  constructor(color) {
+  constructor(color, number) {
     this.color = color;
+    this.number = number;
   }
 }
 
@@ -92,7 +93,9 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    // piece.classList.add(`${this.currPlayer}`);
+
+    piece.style.backgroundColor = this.currPlayer.color;
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -122,7 +125,7 @@ class Game {
 
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer.number} won!`);
     }
 
     // check for tie
@@ -132,7 +135,7 @@ class Game {
     }
 
     // switch players
-    this.currPlayer = this.currPlayer === p1 ? p2 : p1;
+    this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
   }
 
   checkForWin() {
@@ -172,10 +175,10 @@ class Game {
 }
 
 
-const button = document.getElementById('good-button');
-button.addEventListener("submit", function () {
-  const playerOne = new Player(document.getElementById("p1").value)
-  const playerTwo = new Player(document.getElementById("p2").value)
+const button = document.getElementById('start-button');
+button.addEventListener("click", function () {
+  const playerOne = new Player(document.getElementById("p1").value, 1)
+  const playerTwo = new Player(document.getElementById("p2").value, 2)
   new Game(playerOne, playerTwo);
 })
 
